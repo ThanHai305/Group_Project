@@ -15,7 +15,10 @@ public class SecretCodeGuesser {
     private final SecretCode harness = new SecretCode();
 
     // Local instrumentation
-    private int localGuessCount = 0;
+    private static int localGuessCount = 0;
+    public static int getGuessCount() {
+        return localGuessCount;
+    }
     private long startTimeMs;
 
     // ---------------- Entry point ----------------
@@ -58,8 +61,8 @@ public class SecretCodeGuesser {
             char[] secretArr = new char[N];
             for (int j = 0; j < N; j++) secretArr[j] = ALPH[nonZero];
             String secret = new String(secretArr);
-            System.out.println("Secret found (single-letter fill): " + secret);
-            System.out.println("Total guesses: " + localGuessCount);
+            // System.out.println("Secret found (single-letter fill): " + secret);
+            // System.out.println("Total guesses: " + localGuessCount);
             return;
         }
 
@@ -92,9 +95,9 @@ public class SecretCodeGuesser {
         } else {
             finalMatches = callGuess(secret);
         }
-        System.out.println("Secret found : " + secret);
-        System.out.println("Final matches : " + finalMatches + " (expected " + N + ")");
-        System.out.println("Total guesses: " + localGuessCount);
+        // System.out.println("Secret found : " + secret);
+        // System.out.println("Final matches : " + finalMatches + " (expected " + N + ")");
+        // System.out.println("Total guesses: " + localGuessCount);
     }
 
     // ---------------- detect length and capture B-count ----------------
@@ -294,11 +297,7 @@ public class SecretCodeGuesser {
         if (LOG) System.out.println("GUESS#" + localGuessCount + " : \"" + upper + "\" -> " + res);
         // If res equals the length, finish guessing and exit
         if (res == upper.length()) {
-            System.out.println("Secret found: " + upper);
-            System.out.println("Total guesses: " + localGuessCount);
-            long endTimeMs = System.currentTimeMillis();
-            System.out.println("Time taken: " + (endTimeMs - startTimeMs) + " ms");
-            System.exit(0);
+            System.out.println("Secret code found: " + upper);
         }
         return res;
     }
