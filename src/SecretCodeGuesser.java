@@ -27,6 +27,10 @@ public class SecretCodeGuesser {
 
         // detect length and capture B-count in counts[ indexOf('B') ]
         int N = detectLengthAndSetBCount(counts);
+        if (N > 18) {
+            System.out.println("ERROR: Secret code length exceeds 18. Aborting.");
+            return;
+        }
         if (found) return;
         log("Detected length N = " + N + "  (B count captured = " + counts[alphaIndex('B')] + ")");
 
