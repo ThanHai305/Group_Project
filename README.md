@@ -17,7 +17,9 @@ You forgot the secret code that encrypts your notes. The code is an unknown-leng
 ## How to compile & run 💻:
 
 1.Clone this repository
+
 2.Open Terminal
+
 3.Run these commands:
 ```
 javac SecretCode.java SecretCodeGuesser.java
