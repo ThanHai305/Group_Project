@@ -218,7 +218,6 @@ public class SecretCodeGuesser {
                     continue;
                 }
 
-                // Try candidates in priority order
                 for (int k = 0; k < t && !progressed; k++) {
                     int li = tryCandidates[k];
                     char test = ALPH[li];
