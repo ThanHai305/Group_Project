@@ -233,7 +233,6 @@ public class SecretCodeGuesser {
                     int delta = mt - baselineMatches;
 
                     if (delta == 1) {
-                        // new letter is correct at pos
                         candidate[pos] = test;
                         confirmed[pos] = true;
                         if (remaining[li] > 0) remaining[li]--;
