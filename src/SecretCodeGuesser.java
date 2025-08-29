@@ -89,12 +89,12 @@ public class SecretCodeGuesser {
         char[] candidate = new char[N];
         for (int i = 0; i < N; i++) candidate[i] = ALPH[0];
 
-        // 3) initial candidate: blocks in descending frequency (frequency-priority)
+        // Build initial candidate and test baseline
         buildInitialCandidate(candidate, counts);
         int baselineMatches = callGuess(new String(candidate));
         if (found) return;
 
-        // 5) single-position refinement with global priority
+        // single-position refinement with global priority
         if (!allConfirmed(confirmed)) {
             if (found) return;
             singlePositionRefinement(confirmed, candidate, remaining, posMask, baselineMatches);
