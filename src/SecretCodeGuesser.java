@@ -312,7 +312,6 @@ public class SecretCodeGuesser {
      */
     private int callGuess(String s) {
         int res = harness.guess(s);
-        // Only print when secret is found
         if (res == s.length()) {
             System.out.println("Secret code is found: " + s);
             found = true;
