@@ -107,7 +107,15 @@ public class SecretCodeGuesser {
 
     /**
      * Detects the secret code length and counts the number of 'B's.
+     * <p>
+     * This method incrementally probes candidate strings composed solely of 'B's, increasing their
+     * length one by one until the evaluator no longer reports a length mismatch. The length at which
+     * the evaluator accepts the guess defines the true secret code length. During this process, the
+     * evaluator’s feedback also reveals how many 'B's are present in the actual code, which is recorded
+     * in the provided frequency table.
+     * </p>
      *
+     * <h3>Complexity</h3>
      * <ul>
      *   <li>Time complexity: O(n)</li>
      *   <li>Space complexity: O(1)</li>
@@ -139,11 +147,9 @@ public class SecretCodeGuesser {
      * Refines the current candidate string one position at a time until
      * the entire secret code is discovered.
      *
-     * <p>The method works by starting with a baseline guess that is built
-     * using blocks of characters sorted by descending frequency. From
-     * this baseline, it attempts to replace characters at uncertain
-     * positions with other possible letters, guided by both frequency
-     * priority and pruning rules.</p>
+     * <p>The method works by starting with a baseline guess that is built using blocks of characters
+     * sorted by descending frequency. From this baseline, it attempts to replace characters at uncertain
+     * positions with other possible letters, guided by both frequency priority and pruning rules.</p>
      *
      * <h3>Core Idea</h3>
      * <p>
