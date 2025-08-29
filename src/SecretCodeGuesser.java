@@ -270,7 +270,9 @@ public class SecretCodeGuesser {
         }
     }
 
-    // ---------------- small utilities and helpers ----------------
+    // ============================================================
+    // Utility Methods
+    // ============================================================
 
     private boolean allConfirmed(boolean[] confirmed) {
         for (boolean b : confirmed) if (!b) return false;
@@ -308,6 +310,13 @@ public class SecretCodeGuesser {
         return -1;
     }
 
+    /**
+     * Calls {@link SecretCode#guess(String)} and updates
+     * {@code found} if the guess is correct.
+     *
+     * @param s candidate guess
+     * @return number of matches reported by the harness
+     */
     private int callGuess(String s) {
         int res = harness.guess(s);
         // Only print when secret is found
