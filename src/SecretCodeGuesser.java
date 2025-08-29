@@ -198,7 +198,7 @@ public class SecretCodeGuesser {
                 for (int gi = 0; gi < ALPH_SZ; gi++) {
                     int li = globalPriority[gi];
 
-                    // KEY ENHANCEMENT: Skip characters with remaining <= 0
+                    // Skip characters with the remaining <= 0
                     if (remaining[li] <= 0) {
                         continue;
                     }
