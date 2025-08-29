@@ -155,15 +155,14 @@ public class SecretCodeGuesser {
      */
     private void singlePositionRefinement(boolean[] confirmed, char[] candidate,
                                           int[] remaining, int[] posMask, int baseline) {
+        // (implementation unchanged)
         int N = candidate.length;
         int baselineMatches = baseline;
 
-        // global priority: indices sorted by remaining descending (recomputed when remaining changes)
         int[] globalPriority = orderByCountsDesc(remaining);
 
         while (!allConfirmed(confirmed)) {
-
-            // forced-fill optimization: if some letter's remaining equals number of open slots
+            // Forced-fill check
             int open = 0;
             for (int i = 0; i < N; i++) if (!confirmed[i]) open++;
             int forcedIdx = -1;
