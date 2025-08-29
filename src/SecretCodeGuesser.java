@@ -101,7 +101,22 @@ public class SecretCodeGuesser {
         }
     }
 
-    // ---------------- detect length and capture B-count ----------------
+    // ============================================================
+    // Length Detection
+    // ============================================================
+
+    /**
+     * Detects the secret code length and counts the number of 'B's.
+     *
+     * <ul>
+     *   <li>Time complexity: O(n)</li>
+     *   <li>Space complexity: O(1)</li>
+     *   <li>Guess complexity: O(n)</li>
+     * </ul>
+     *
+     * @param counts frequency table to update with 'B' count
+     * @return the detected secret length
+     */
     private int detectLengthAndSetBCount(int[] counts) {
         int bIdx = alphaIndex('B');
         for (int k = 1; k <= 18; k++) {
