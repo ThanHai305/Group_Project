@@ -123,7 +123,7 @@ public class SecretCodeGuesser {
             int r = callGuess(repeatChar('B', k));
             if (found) return k;
             if (r != -2) {
-                counts[bIdx] = r; // number of B's in the secret
+                counts[bIdx] = r;
                 return k;
             }
         }
