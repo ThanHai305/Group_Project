@@ -131,7 +131,10 @@ public class SecretCodeGuesser {
     }
 
 
-    // ---------------- Enhanced single-position refinement with exhaustion tracking ----------------
+    // ============================================================
+    // Single-Position Refinement
+    // ============================================================
+
     private void singlePositionRefinement(boolean[] confirmed, char[] candidate,
                                           int[] remaining, int[] posMask, int baseline) {
         int N = candidate.length;
