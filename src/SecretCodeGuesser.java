@@ -215,7 +215,7 @@ public class SecretCodeGuesser {
                 }
 
                 if (t == 0) {
-                    continue; // nothing to try here
+                    continue;
                 }
 
                 // Try candidates in priority order
