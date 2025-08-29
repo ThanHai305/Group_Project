@@ -222,7 +222,6 @@ public class SecretCodeGuesser {
                     int li = tryCandidates[k];
                     char test = ALPH[li];
 
-                    // Double-check that we still have remaining characters before trying
                     if (remaining[li] <= 0) {
                         continue;
                     }
