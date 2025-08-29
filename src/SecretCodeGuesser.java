@@ -239,7 +239,7 @@ public class SecretCodeGuesser {
                         if (remaining[li] > 0) remaining[li]--;
                         int bit = 1 << pos;
                         for (int z = 0; z < ALPH_SZ; z++) if (z != li) posMask[z] &= ~bit;
-                        baselineMatches = mt; // adopt new baseline
+                        baselineMatches = mt; // adopt a new baseline
                         progressed = true;
                         // update global priority since remaining changed
                         globalPriority = orderByCountsDesc(remaining);
