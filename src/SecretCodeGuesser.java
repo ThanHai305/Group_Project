@@ -70,17 +70,16 @@ public class SecretCodeGuesser {
             return;
         }
 
-        // Step: forced-fill if only one letter present across entire string
+        // If only one letter is present → fill and exit
         int numNonZero = 0;
         for (int i = 0; i < ALPH_SZ; i++) {
             if (counts[i] > 0) { numNonZero++; }
         }
         if (numNonZero == 1) {
-            // Only one letter occurs -> fill and finish
             return;
         }
 
-        // 2) Set up working structures
+        // Initialize working structures
         int[] remaining = counts.clone();        // remaining count to place for each letter
         int[] posMask = new int[ALPH_SZ];        // bitmask of possible positions for each letter
         int fullMask = (N >= 31) ? ~0 : ((1 << N) - 1);
