@@ -23,16 +23,27 @@
  */
 public class SecretCodeGuesser {
 
-    // Allowed letters (fixed order)
+    /** Allowed letters in the secret code (fixed order). */
     private static final char[] ALPH = {'B', 'A', 'C', 'X', 'I', 'U'};
     private static final int ALPH_SZ = ALPH.length;
 
-    // Harness instance (provided by assignment)
+    /** Harness instance provided by the assignment. */
     private final SecretCode harness = new SecretCode();
 
-    // Local instrumentation
+    /** Tracks whether the secret has been fully discovered. */
     private boolean found = false;
-    // ---------------- Entry point ----------------
+
+    // ============================================================
+    // Main Entry Point
+    // ============================================================
+
+    /**
+     * Begins the guessing process.
+     *
+     * <p>The method orchestrates all phases: frequency measurement,
+     * candidate construction, and iterative refinement. Execution
+     * stops early if the secret code is discovered.</p>
+     */
     public void start() {
 
         // 1) frequency measurement
