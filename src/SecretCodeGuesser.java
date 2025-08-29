@@ -136,22 +136,43 @@ public class SecretCodeGuesser {
     // ============================================================
 
     /**
-     * Refines candidate guesses one position at a time until all positions
-     * are confirmed.
+     * Refines the current candidate string one position at a time until
+     * the entire secret code is discovered.
+     *
+     * <p>The method works by starting with a baseline guess that is built
+     * using blocks of characters sorted by descending frequency. From
+     * this baseline, it attempts to replace characters at uncertain
+     * positions with other possible letters, guided by both frequency
+     * priority and pruning rules.</p>
+     *
+     * <h3>Core Idea</h3>
+     * <p>
+     * Start with a baseline guess which is a string filled with the most common character (the one with the highest frequency).
+     * Then go through all other possible characters in order from most common to least common and check whether it can be used
+     * to replace any of the characters in the baseline guess until it has correctly guessed all positions in the secret key except
+     * for the last incorrect one. This last incorrect one is simply the character with the smallest remaining non-zero frequency.
+     * </p>
      *
      * <h3>Optimizations</h3>
      * <ul>
-     *   <li><Forced fill: If a letter’s remaining count equals the number of open slots, fill them directly.</li>
-     *   <li>Global priority: Try letters in descending order of remaining frequency.</li>
-     *   <li>Exhaustion tracking: Skip letters with zero remaining.</li>
-     *   <li>Bitmask pruning: Track and eliminate impossible positions for each letter.</li>
+     *   <li>Forced Fill: If a letter’s remaining count equals the number of unconfirmed positions, fill them directly without testing.</li>
+     *   <li>Global Priority: Try replacement letters in descending order of their remaining frequency (most likely first).</li>
+     *   <li>Exhaustion Tracking: Skip letters that are already fully placed (remaining count ≤ 0).</li>
+     *   <li>Bitmask Pruning: Maintain masks of allowed positions for each letter to avoid retesting eliminated placements.</li>
      * </ul>
      *
+     * <h3>Complexity</h3>
      * <ul>
      *   <li>Time complexity: O(n²)</li>
      *   <li>Space complexity: O(n)</li>
      *   <li>Guess complexity: O(n²)</li>
      * </ul>
+     *
+     * @param confirmed boolean array tracking which positions are finalized
+     * @param candidate working candidate string
+     * @param remaining count of how many occurrences of each letter remain to be placed
+     * @param posMask bitmask of allowable positions for each letter
+     * @param baseline initial number of matches from the baseline guess
      */
     private void singlePositionRefinement(boolean[] confirmed, char[] candidate,
                                           int[] remaining, int[] posMask, int baseline) {
