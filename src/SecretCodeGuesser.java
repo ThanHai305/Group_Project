@@ -85,8 +85,8 @@ public class SecretCodeGuesser {
         int fullMask = (N >= 31) ? ~0 : ((1 << N) - 1);
         for (int i = 0; i < ALPH_SZ; i++) posMask[i] = fullMask;
 
-        boolean[] confirmed = new boolean[N];    // which positions are confirmed
-        char[] candidate = new char[N];          // working candidate (tentative values)
+        boolean[] confirmed = new boolean[N];
+        char[] candidate = new char[N];
         for (int i = 0; i < N; i++) candidate[i] = ALPH[0];
 
         // 3) initial candidate: blocks in descending frequency (frequency-priority)
