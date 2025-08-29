@@ -1,3 +1,26 @@
+/**
+ * SecretCodeGuesser
+ *
+ * <p>This class implements an algorithm to discover a hidden secret code
+ * using an interactive harness (SecretCode). The code is composed
+ * of characters drawn from a fixed alphabet {'B','A','C','X','I','U'}
+ * with a maximum length of 18.</p>
+ *
+ * <h2>Algorithm Overview</h2>
+ * <ol>
+ *   <li>Frequency Measurement: Determine the length of the code and frequency of each letter via uniform guesses (e.g. "BBBBB...").</li>
+ *   <li>Sanity Check: Ensure measured frequencies match the length.</li>
+ *   <li>Forced Fill:If only one letter is present, fill immediately.</li>
+ *   <li>Candidate Initialization: Construct an initial candidate string by placing letters in blocks sorted by frequency.</li>
+ *   <li>Single-Position Refinement: Iteratively confirm or eliminate candidate letters for each position until the secret is found.</li>
+ * </ol>
+ <h2>Complexities</h2>
+ * <ul>
+ *   <li>Time complexity: O(n²) worst case for refinement</li>
+ *   <li>Space complexity: O(n)</li>
+ *   <li>Guess complexity: O(n²) in the refinement stage</li>
+ * </ul>
+ */
 public class SecretCodeGuesser {
 
     // Allowed letters (fixed order)
