@@ -80,8 +80,8 @@ public class SecretCodeGuesser {
         }
 
         // Initialize working structures
-        int[] remaining = counts.clone();        // remaining count to place for each letter
-        int[] posMask = new int[ALPH_SZ];        // bitmask of possible positions for each letter
+        int[] remaining = counts.clone();
+        int[] posMask = new int[ALPH_SZ];
         int fullMask = (N >= 31) ? ~0 : ((1 << N) - 1);
         for (int i = 0; i < ALPH_SZ; i++) posMask[i] = fullMask;
 
