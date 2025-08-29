@@ -141,13 +141,10 @@ public class SecretCodeGuesser {
      *
      * <h3>Optimizations</h3>
      * <ul>
-     *   <li><b>Forced fill:</b> If a letter’s remaining count equals the
-     *       number of open slots, fill them directly.</li>
-     *   <li><b>Global priority:</b> Try letters in descending order of
-     *       remaining frequency.</li>
-     *   <li><b>Exhaustion tracking:</b> Skip letters with zero remaining.</li>
-     *   <li><b>Bitmask pruning:</b> Track and eliminate impossible positions
-     *       for each letter.</li>
+     *   <li><Forced fill: If a letter’s remaining count equals the number of open slots, fill them directly.</li>
+     *   <li>Global priority: Try letters in descending order of remaining frequency.</li>
+     *   <li>Exhaustion tracking: Skip letters with zero remaining.</li>
+     *   <li>Bitmask pruning: Track and eliminate impossible positions for each letter.</li>
      * </ul>
      *
      * <ul>
