@@ -1,26 +1,16 @@
-// SecretCodeGuesser.java
-// Enhanced version with character exhaustion tracking
-// Prevents using characters that have frequency = 0 remaining
-
 public class SecretCodeGuesser {
 
     // Allowed letters (fixed order)
     private static final char[] ALPH = {'B', 'A', 'C', 'X', 'I', 'U'};
     private static final int ALPH_SZ = ALPH.length;
 
-    // Verbose logging toggle (set false for quiet runs)
-    private static final boolean LOG = true;
-
     // Harness instance (provided by assignment)
     private final SecretCode harness = new SecretCode();
 
     // Local instrumentation
-    private int localGuessCount = 0;
-    private long startTimeMs;
     private boolean found = false;
     // ---------------- Entry point ----------------
     public void start() {
-        startTimeMs = System.currentTimeMillis();
 
         // 1) frequency measurement
         int[] counts = new int[ALPH_SZ];
@@ -32,7 +22,6 @@ public class SecretCodeGuesser {
             return;
         }
         if (found) return;
-        log("Detected length N = " + N + "  (B count captured = " + counts[alphaIndex('B')] + ")");
 
         // measure other letters (one all-same guess per letter except B)
         for (int i = 0; i < ALPH_SZ; i++) {
@@ -40,7 +29,6 @@ public class SecretCodeGuesser {
             counts[i] = callGuess(repeatChar(ALPH[i], N));
             if (found) return;
         }
-        log("Letter counts: " + countsToString(counts));
 
         // sanity check
         int sum = 0;
@@ -51,19 +39,12 @@ public class SecretCodeGuesser {
         }
 
         // Step: forced-fill if only one letter present across entire string
-        int nonZero = -1, numNonZero = 0;
+        int numNonZero = 0;
         for (int i = 0; i < ALPH_SZ; i++) {
-            if (counts[i] > 0) { nonZero = i; numNonZero++; }
+            if (counts[i] > 0) { numNonZero++; }
         }
         if (numNonZero == 1) {
-            // only one letter occurs -> fill and finish
-            char[] secretArr = new char[N];
-            for (int j = 0; j < N; j++) secretArr[j] = ALPH[nonZero];
-            String secret = new String(secretArr);
-            long elapsed = System.currentTimeMillis() - startTimeMs;
-            System.out.println("Secret found (single-letter fill): " + secret);
-            System.out.println("Total guesses: " + localGuessCount);
-            System.out.println("Elapsed ms   : " + elapsed);
+            // Only one letter occurs -> fill and finish
             return;
         }
 
@@ -81,27 +62,12 @@ public class SecretCodeGuesser {
         buildInitialCandidate(candidate, counts);
         int baselineMatches = callGuess(new String(candidate));
         if (found) return;
-        log("Initial candidate: " + new String(candidate) + "  matches=" + baselineMatches);
 
         // 5) single-position refinement with global priority
         if (!allConfirmed(confirmed)) {
             if (found) return;
-            log("Falling back to single-position refinement (global priority)...");
             singlePositionRefinement(confirmed, candidate, remaining, posMask, baselineMatches);
         }
-
-        // 6) final report: if confirmed, skip redundant final guess
-        String secret = new String(candidate);
-        int finalMatches;
-        if (allConfirmed(confirmed)) {
-            finalMatches = N;
-        } else {
-            finalMatches = callGuess(secret);
-            if (found) return;
-        }
-        System.out.println("Secret found : " + secret);
-        System.out.println("Final matches : " + finalMatches + " (expected " + N + ")");
-        System.out.println("Total guesses: " + localGuessCount);
     }
 
     // ---------------- detect length and capture B-count ----------------
@@ -118,76 +84,6 @@ public class SecretCodeGuesser {
         return 18; // fallback
     }
 
-    // ---------------- group/binary locating helpers ----------------
-    private void locatePositionsByBinarySplit(int letterIdx, int need, int candidateMask, int fillerIndex,
-                                              boolean[] confirmed, char[] candidate, int[] remaining, int[] posMask) {
-        if (need <= 0 || candidateMask == 0) return;
-
-        int pop = Integer.bitCount(candidateMask);
-        if (pop == need) {
-            assignMaskToLetter(candidateMask, letterIdx, confirmed, candidate, remaining, posMask);
-            return;
-        }
-
-        int left = takeLowerHalf(candidateMask);
-        int right = candidateMask & ~left;
-
-        if (left != 0) {
-            int cLeft = queryCountForMask(letterIdx, left, fillerIndex, confirmed, candidate);
-            if (found) return;
-            if (cLeft > 0) locatePositionsByBinarySplit(letterIdx, cLeft, left, fillerIndex, confirmed, candidate, remaining, posMask);
-            if (found) return;
-        }
-        if (right != 0) {
-            int cRight = queryCountForMask(letterIdx, right, fillerIndex, confirmed, candidate);
-            if (found) return;
-            if (cRight > 0) locatePositionsByBinarySplit(letterIdx, cRight, right, fillerIndex, confirmed, candidate, remaining, posMask);
-            if (found) return;
-        }
-    }
-
-    private int queryCountForMask(int letterIdx, int mask, int fillerIndex, boolean[] confirmed, char[] candidate) {
-        int N = candidate.length;
-        char[] s = new char[N];
-        for (int i = 0; i < N; i++) {
-            if (confirmed[i]) s[i] = candidate[i];
-            else if (((mask >> i) & 1) != 0) s[i] = ALPH[letterIdx];
-            else s[i] = ALPH[fillerIndex];
-        }
-        int res = callGuess(new String(s));
-        if (found) return res;
-        log("GroupQuery '" + ALPH[letterIdx] + "' mask " + maskToString(mask, N) + " -> " + res);
-        return res;
-    }
-
-    private void assignMaskToLetter(int mask, int letterIdx, boolean[] confirmed, char[] candidate,
-                                    int[] remaining, int[] posMask) {
-        int assigned = 0;
-        for (int p = 0; p < candidate.length; p++) {
-            int bit = 1 << p;
-            if ((mask & bit) != 0 && !confirmed[p]) {
-                confirmed[p] = true;
-                candidate[p] = ALPH[letterIdx];
-                assigned++;
-                // remove this position from other letters' candidate masks
-                for (int k = 0; k < ALPH_SZ; k++) if (k != letterIdx) posMask[k] &= ~bit;
-            }
-        }
-        remaining[letterIdx] -= assigned;
-        if (remaining[letterIdx] < 0) remaining[letterIdx] = 0;
-        log("Assigned mask " + maskToString(mask, candidate.length) + " => '" + ALPH[letterIdx] + "' (count " + assigned + ")");
-    }
-
-    private int takeLowerHalf(int mask) {
-        int bits = Integer.bitCount(mask);
-        if (bits <= 1) return mask;
-        int need = bits / 2;
-        int out = 0;
-        for (int i = 0; i < 31 && need > 0; i++) {
-            if (((mask >> i) & 1) != 0) { out |= (1 << i); need--; }
-        }
-        return out;
-    }
 
     // ---------------- Enhanced single-position refinement with exhaustion tracking ----------------
     private void singlePositionRefinement(boolean[] confirmed, char[] candidate,
@@ -200,9 +96,6 @@ public class SecretCodeGuesser {
 
         while (!allConfirmed(confirmed)) {
 
-            // Log current remaining counts for debugging
-            log("Current remaining: " + countsToString(remaining));
-
             // forced-fill optimization: if some letter's remaining equals number of open slots
             int open = 0;
             for (int i = 0; i < N; i++) if (!confirmed[i]) open++;
@@ -211,7 +104,6 @@ public class SecretCodeGuesser {
                 if (remaining[i] == open && open > 0) { forcedIdx = i; break; }
             }
             if (forcedIdx != -1) {
-                log("Forced-fill: filling " + open + " unknown(s) with '" + ALPH[forcedIdx] + "' in ONE guess.");
                 for (int p = 0; p < N; p++) {
                     if (!confirmed[p]) {
                         confirmed[p] = true;
@@ -223,7 +115,6 @@ public class SecretCodeGuesser {
                 }
                 baselineMatches = callGuess(new String(candidate));
                 if (found) return;
-                log("After forced-fill guess, m0 = " + baselineMatches);
                 // recompute priority
                 globalPriority = orderByCountsDesc(remaining);
                 continue;
@@ -243,17 +134,14 @@ public class SecretCodeGuesser {
 
                     // KEY ENHANCEMENT: Skip characters with remaining <= 0
                     if (remaining[li] <= 0) {
-                        log("Skipping '" + ALPH[li] + "' at pos " + pos + " - exhausted (remaining=" + remaining[li] + ")");
                         continue;
                     }
 
                     if (((posMask[li] >> pos) & 1) == 0) {
-                        log("Skipping '" + ALPH[li] + "' at pos " + pos + " - eliminated by position mask");
                         continue;
                     }
 
                     if (ALPH[li] == candidate[pos]) {
-                        log("Skipping '" + ALPH[li] + "' at pos " + pos + " - already current tentative char");
                         continue; // skip current tentative char
                     }
 
@@ -261,7 +149,6 @@ public class SecretCodeGuesser {
                 }
 
                 if (t == 0) {
-                    log("No valid candidates to try at position " + pos);
                     continue; // nothing to try here
                 }
 
@@ -272,7 +159,6 @@ public class SecretCodeGuesser {
 
                     // Double-check that we still have remaining characters before trying
                     if (remaining[li] <= 0) {
-                        log("Skipping exhausted character '" + test + "' at pos " + pos + " (remaining=" + remaining[li] + ")");
                         continue;
                     }
 
@@ -290,7 +176,6 @@ public class SecretCodeGuesser {
                         int bit = 1 << pos;
                         for (int z = 0; z < ALPH_SZ; z++) if (z != li) posMask[z] &= ~bit;
                         baselineMatches = mt; // adopt new baseline
-                        log("Confirmed pos " + pos + " = '" + test + "' (+1). m0=" + baselineMatches + ", remaining[" + ALPH[li] + "]=" + remaining[li]);
                         progressed = true;
                         // update global priority since remaining changed
                         globalPriority = orderByCountsDesc(remaining);
@@ -302,7 +187,6 @@ public class SecretCodeGuesser {
                         confirmed[pos] = true;
                         int bit = 1 << pos;
                         for (int z = 0; z < ALPH_SZ; z++) if (z != origIdx) posMask[z] &= ~bit;
-                        log("Confirmed pos " + pos + " = '" + candidate[pos] + "' (-1). m0 stays " + baselineMatches + ", remaining[" + ALPH[origIdx] + "]=" + remaining[origIdx]);
                         progressed = true;
                         // update global priority since remaining changed
                         globalPriority = orderByCountsDesc(remaining);
@@ -310,29 +194,17 @@ public class SecretCodeGuesser {
                     } else {
                         // delta == 0: eliminate li at pos
                         posMask[li] &= ~(1 << pos);
-                        log("Eliminated '" + test + "' at pos " + pos + " (0).");
                     }
                 }
             }
 
             if (!progressed) {
-                log("No progress in single-position refinement. Breaking.");
                 break;
             }
         }
     }
 
     // ---------------- small utilities and helpers ----------------
-    private int getUnconfirmedMask(boolean[] confirmed) {
-        int mask = 0;
-        for (int i = 0; i < confirmed.length; i++) if (!confirmed[i]) mask |= (1 << i);
-        return mask;
-    }
-
-    private int findAbsentLetterIndex(int[] counts) {
-        for (int i = 0; i < ALPH_SZ; i++) if (counts[i] == 0) return i;
-        return -1;
-    }
 
     private boolean allConfirmed(boolean[] confirmed) {
         for (boolean b : confirmed) if (!b) return false;
@@ -359,23 +231,6 @@ public class SecretCodeGuesser {
         return idx;
     }
 
-    private String countsToString(int[] counts) {
-        StringBuilder sb = new StringBuilder("{");
-        for (int i = 0; i < ALPH_SZ; i++) {
-            sb.append(ALPH[i]).append(":").append(counts[i]);
-            if (i + 1 < ALPH_SZ) sb.append(", ");
-        }
-        sb.append("}");
-        return sb.toString();
-    }
-
-    private String maskToString(int mask, int N) {
-        StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < N; i++) sb.append(((mask >> i) & 1) != 0 ? "1" : "0");
-        sb.append("]");
-        return sb.toString();
-    }
-
     private String repeatChar(char c, int n) {
         char[] a = new char[n];
         for (int i = 0; i < n; i++) a[i] = c;
@@ -388,18 +243,12 @@ public class SecretCodeGuesser {
     }
 
     private int callGuess(String s) {
-        localGuessCount++;
         int res = harness.guess(s);
-        if (LOG) System.out.println("GUESS#" + localGuessCount + " : \"" + s + "\" -> " + res);
-        // If res equals the length, finish guessing and exit
+        // Only print when secret is found
         if (res == s.length()) {
             System.out.println("Secret code is found: " + s);
             found = true;
         }
         return res;
-    }
-
-    private void log(String s) {
-        if (LOG) System.out.println(s);
     }
 }
