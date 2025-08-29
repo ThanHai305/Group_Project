@@ -238,24 +238,20 @@ public class SecretCodeGuesser {
                         if (remaining[li] > 0) remaining[li]--;
                         int bit = 1 << pos;
                         for (int z = 0; z < ALPH_SZ; z++) if (z != li) posMask[z] &= ~bit;
-                        baselineMatches = mt; // adopt a new baseline
+                        baselineMatches = mt;
                         progressed = true;
-                        // update global priority since remaining changed
                         globalPriority = orderByCountsDesc(remaining);
                         break;
                     } else if (delta == -1) {
-                        // original candidate[pos] was correct
                         int origIdx = alphaIndex(candidate[pos]);
                         if (origIdx >= 0 && remaining[origIdx] > 0) remaining[origIdx]--;
                         confirmed[pos] = true;
                         int bit = 1 << pos;
                         for (int z = 0; z < ALPH_SZ; z++) if (z != origIdx) posMask[z] &= ~bit;
                         progressed = true;
-                        // update global priority since remaining changed
                         globalPriority = orderByCountsDesc(remaining);
                         break;
                     } else {
-                        // delta == 0: eliminate li at pos
                         posMask[li] &= ~(1 << pos);
                     }
                 }
