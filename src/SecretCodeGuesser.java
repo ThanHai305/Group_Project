@@ -135,6 +135,27 @@ public class SecretCodeGuesser {
     // Single-Position Refinement
     // ============================================================
 
+    /**
+     * Refines candidate guesses one position at a time until all positions
+     * are confirmed.
+     *
+     * <h3>Optimizations</h3>
+     * <ul>
+     *   <li><b>Forced fill:</b> If a letter’s remaining count equals the
+     *       number of open slots, fill them directly.</li>
+     *   <li><b>Global priority:</b> Try letters in descending order of
+     *       remaining frequency.</li>
+     *   <li><b>Exhaustion tracking:</b> Skip letters with zero remaining.</li>
+     *   <li><b>Bitmask pruning:</b> Track and eliminate impossible positions
+     *       for each letter.</li>
+     * </ul>
+     *
+     * <ul>
+     *   <li>Time complexity: O(n²)</li>
+     *   <li>Space complexity: O(n)</li>
+     *   <li>Guess complexity: O(n²)</li>
+     * </ul>
+     */
     private void singlePositionRefinement(boolean[] confirmed, char[] candidate,
                                           int[] remaining, int[] posMask, int baseline) {
         int N = candidate.length;
