@@ -46,10 +46,8 @@ public class SecretCodeGuesser {
      */
     public void start() {
 
-        // 1) frequency measurement
         int[] counts = new int[ALPH_SZ];
 
-        // detect length and capture B-count in counts[ indexOf('B') ]
         int N = detectLengthAndSetBCount(counts);
         if (N > 18) {
             System.out.println("ERROR: Secret code length exceeds 18. Aborting.");
@@ -57,14 +55,14 @@ public class SecretCodeGuesser {
         }
         if (found) return;
 
-        // measure other letters (one all-same guess per letter except B)
+        // Measure other letters (skip 'B', already measured)
         for (int i = 0; i < ALPH_SZ; i++) {
             if (ALPH[i] == 'B') continue;
             counts[i] = callGuess(repeatChar(ALPH[i], N));
             if (found) return;
         }
 
-        // sanity check
+        // Sanity check: total frequency must equal N
         int sum = 0;
         for (int v : counts) sum += v;
         if (sum != N) {
