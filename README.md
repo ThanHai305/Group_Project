@@ -25,13 +25,13 @@ You forgot the secret code that encrypts your notes. The code is an unknown-leng
 javac SecretCode.java SecretCodeGuesser.java
 java SecretCode 
 ```
-👥 **Team Contributions:**
+👥 **Team Contributions (total: 4 x 3 = 12):**
 | Member Name        | Contribution Score |                          Github                      |
 |--------------------|--------------------|------------------------------------------------------|   
-| Truong Kiem Minh   |          5         | [kiemminh000](https://github.com/kiemminh000)        |
-| Lai Ho Thanh Hai   |          5         | [ThanHai305](https://github.com/ThanHai305)          |
-| Nguyen Nhat Thong  |          5         | [Thongngx](https://github.com/Thongngx)              |
-| Tran Nguyen Bao Hoc|          5         | [Ricobaohoc13](https://github.com/Ricobaohoc13)      |
+| Truong Kiem Minh   |          3         | [kiemminh000](https://github.com/kiemminh000)        |
+| Lai Ho Thanh Hai   |          3         | [ThanHai305](https://github.com/ThanHai305)          |
+| Nguyen Nhat Thong  |          3         | [Thongngx](https://github.com/Thongngx)              |
+| Tran Nguyen Bao Hoc|          3         | [Ricobaohoc13](https://github.com/Ricobaohoc13)      |
 ---
 
 ## Video Demonstration
