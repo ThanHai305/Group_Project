@@ -166,9 +166,15 @@ public class SecretCodeGuesser {
      *   scenario? Like if full B, A, C, X, I score = 0, then just add that whole array with U, like automatically fill every space with U since there’s no other characters?” were used.
      *   All output was verified, edited, and adapted by <Hoc Tran>. The full AI interaction log is included in the Appendix.
      *   </li>
+     *
      *   <li>Global Priority: Try replacement letters in order of their remaining frequency (most likely first).</li>
      *   <li>Exhaustion Tracking: Skip letters that are already fully placed (remaining count ≤ 0).</li>
      *   <li>Bitmask Pruning: Maintain masks of allowed positions for each letter to avoid retesting eliminated placements.</li>
+     *
+     *   <li>Parts of the initial draft of 3 algorithms above were generated using Grok AI (as of August 2025). Prompts such as
+     *   “how can I improve the guesser code? given the fact that length of secret code is unknown, and you can not modify
+     *   the SecretCode.java” were used. All output was verified, edited, and adapted by <Hoc Tran>. The full AI interaction
+     *   log is included in the Appendix.</li>
      * </ul>
      *
      * <h3>Complexity</h3>
