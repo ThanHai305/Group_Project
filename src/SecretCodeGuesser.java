@@ -161,7 +161,11 @@ public class SecretCodeGuesser {
      *
      * <h3>Optimizations</h3>
      * <ul>
-     *   <li>Forced Fill: If a letter’s remaining count equals the number of unconfirmed positions, fill them directly without testing.</li>
+     *   <li>Forced Fill: If a letter’s remaining count equals the number of unconfirmed positions, fill them directly without testing.
+     *   Parts of the initial draft of this algorithm were generated using Grok AI (as of August 2025). Prompts such as “Is there any way to make less guess? Like improve the worst-case
+     *   scenario? Like if full B, A, C, X, I score = 0, then just add that whole array with U, like automatically fill every space with U since there’s no other characters?” were used.
+     *   All output was verified, edited, and adapted by <Hoc>. The full AI interaction log is included in the Appendix.
+     *   </li>
      *   <li>Global Priority: Try replacement letters in descending order of their remaining frequency (most likely first).</li>
      *   <li>Exhaustion Tracking: Skip letters that are already fully placed (remaining count ≤ 0).</li>
      *   <li>Bitmask Pruning: Maintain masks of allowed positions for each letter to avoid retesting eliminated placements.</li>
