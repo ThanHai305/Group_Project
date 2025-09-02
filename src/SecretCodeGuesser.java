@@ -171,7 +171,7 @@ public class SecretCodeGuesser {
      *   <li>Exhaustion Tracking: Skip letters that are already fully placed (remaining count ≤ 0).</li>
      *   <li>Bitmask Pruning: Maintain masks of allowed positions for each letter to avoid retesting eliminated placements.</li>
      *
-     *   <li>Parts of the initial draft of 3 algorithms above were generated using Grok AI (as of August 2025). Prompts such as
+     *   <li>Parts of the initial draft of 3 algorithms above were generated using ChatGPT 4 in VS code (as of August 2025). Prompts such as
      *   “how can I improve the guesser code? given the fact that length of secret code is unknown, and you can not modify
      *   the SecretCode.java” were used. All output was verified, edited, and adapted by <Hoc Tran>. The full AI interaction
      *   log is included in the Appendix.</li>
